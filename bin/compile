@@ -14,14 +14,13 @@ puts `[ -d "#{CACHE_DIR}/.bundle" ] && rm -rf "#{CACHE_DIR}/.bundle"`
 puts "-----> Copying .heroku-bundle to .bundle"
 puts `mv "#{BUILD_DIR}/.heroku-bundle" "#{BUILD_DIR}/.bundle"`
 
+puts "-----> Maintaining absolute path references in bundle config (doing nothing)"
+# echo "Convert all absolute path references in the bundle to refer the temporary build location instead."
+puts `find "#{BUILD_DIR}/.bundle/" -type f -exec sed -i "s /app/ #{BUILD_DIR}/ g" {} \;`
+
 puts "-----> Outputting bundle contents for verification"
 puts `cat #{BUILD_DIR}/.bundle/config`
 
-
-puts "-----> Maintaining absolute path references in bundle config (doing nothing)"
-# echo "Convert all absolute path references in the bundle to refer the temporary build location instead."
-# find "$build_dir/.bundle/" -type f -exec sed -i "s /app/ $build_dir/ g" {} \;
-#sed "s /app/ /$build_dir/ g" "$build_dir/.bundle/*"
 
 puts "-----> Caching the new bundle config"
 puts `mkdir -p "#{CACHE_DIR}"`
