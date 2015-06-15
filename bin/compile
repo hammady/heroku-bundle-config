@@ -3,11 +3,9 @@
 $stdout.sync = true # Sync output.
 
 # Contains the Rails application.
-BUILD_DIR = ARGV[0] 
+BUILD_DIR = ARGV[0]
 # This & later buildpacks may use the cache to fetch data.
-CACHE_DIR = ARGV[1] 
-
-puts  "----->"
+CACHE_DIR = ARGV[1]
 
 puts  "-----> Purging .bundle directory from build and cache"
 print `[ -d "#{BUILD_DIR}/.bundle" ] && rm -rf "#{BUILD_DIR}/.bundle"`
@@ -16,12 +14,12 @@ print `[ -d "#{CACHE_DIR}/.bundle" ] && rm -rf "#{CACHE_DIR}/.bundle"`
 puts  "-----> Copying .heroku-bundle to .bundle"
 print `mv "#{BUILD_DIR}/.heroku-bundle" "#{BUILD_DIR}/.bundle"`
 
-puts  "-----> Writing paths to replace /app with cache directory (#{CACHE_DIR})"
+# puts  "-----> Writing paths to replace /app with cache directory (#{CACHE_DIR})"
 # echo "Convert all absolute path references in the bundle to refer the temporary build location instead."
-print `find "#{CACHE_DIR}/.bundle/" -type f -exec sed -i "s /app/ #{CACHE_DIR}/ g" {} \;`
+# print `find "#{CACHE_DIR}/.bundle/" -type f -exec sed -i "s /app/ #{CACHE_DIR}/ g" {} \;`
 
 puts  "-----> Outputting bundle contents for verification"
-print `cat #{BUILD_DIR}/.bundle/config`
+puts `cat #{BUILD_DIR}/.bundle/config`
 
 
 puts  "-----> Caching the new bundle config"
