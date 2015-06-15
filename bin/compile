@@ -7,21 +7,23 @@ BUILD_DIR = ARGV[0]
 # This & later buildpacks may use the cache to fetch data.
 CACHE_DIR = ARGV[1] 
 
-puts "-----> Purging .bundle directory from build and cache"
-puts `[ -d "#{BUILD_DIR}/.bundle" ] && rm -rf "#{BUILD_DIR}/.bundle"`
-puts `[ -d "#{CACHE_DIR}/.bundle" ] && rm -rf "#{CACHE_DIR}/.bundle"`
+puts  "----->"
 
-puts "-----> Copying .heroku-bundle to .bundle"
-puts `mv "#{BUILD_DIR}/.heroku-bundle" "#{BUILD_DIR}/.bundle"`
+puts  "-----> Purging .bundle directory from build and cache"
+print `[ -d "#{BUILD_DIR}/.bundle" ] && rm -rf "#{BUILD_DIR}/.bundle"`
+print `[ -d "#{CACHE_DIR}/.bundle" ] && rm -rf "#{CACHE_DIR}/.bundle"`
 
-puts "-----> Maintaining absolute path references in bundle config (doing nothing)"
+puts  "-----> Copying .heroku-bundle to .bundle"
+print `mv "#{BUILD_DIR}/.heroku-bundle" "#{BUILD_DIR}/.bundle"`
+
+puts  "-----> Writing paths to replace /app with cache directory (#{CACHE_DIR})"
 # echo "Convert all absolute path references in the bundle to refer the temporary build location instead."
-puts `find "#{BUILD_DIR}/.bundle/" -type f -exec sed -i "s /app/ #{BUILD_DIR}/ g" {} \;`
+print `find "#{CACHE_DIR}/.bundle/" -type f -exec sed -i "s /app/ #{CACHE_DIR}/ g" {} \;`
 
-puts "-----> Outputting bundle contents for verification"
-puts `cat #{BUILD_DIR}/.bundle/config`
+puts  "-----> Outputting bundle contents for verification"
+print `cat #{BUILD_DIR}/.bundle/config`
 
 
-puts "-----> Caching the new bundle config"
-puts `mkdir -p "#{CACHE_DIR}"`
-puts `cp -r "#{BUILD_DIR}/.bundle" "#{CACHE_DIR}/.bundle"`
+puts  "-----> Caching the new bundle config"
+print `mkdir -p "#{CACHE_DIR}"`
+print `cp -r "#{BUILD_DIR}/.bundle" "#{CACHE_DIR}/.bundle"`
