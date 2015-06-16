@@ -16,7 +16,9 @@ print `mv "#{BUILD_DIR}/.heroku-bundle" "#{BUILD_DIR}/.bundle"`
 
 # Advice from stackoverflow.com/questions/22995788
 puts  "-----> Replace /app with build directory #{BUILD_DIR} for build stage"
-print `sed -i -e "s/app/#{BUILD_DIR}/g" .bundle/config`
+sed_exp = "s/app/#{ BUILD_DIR.gsub('/', '\/') }/g"
+puts "sed expression: #{sed_exp}"
+print `sed -i #{sed_exp} .bundle/config`
 
 puts  "-----> Outputting .bundle/config contents for verification"
 puts `cat #{BUILD_DIR}/.bundle/config`
