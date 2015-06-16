@@ -14,13 +14,12 @@ print `[ -d "#{CACHE_DIR}/.bundle" ] && rm -rf "#{CACHE_DIR}/.bundle"`
 puts  "-----> Copying .heroku-bundle to .bundle"
 print `mv "#{BUILD_DIR}/.heroku-bundle" "#{BUILD_DIR}/.bundle"`
 
-# puts  "-----> Writing paths to replace /app with cache directory (#{CACHE_DIR})"
-# echo "Convert all absolute path references in the bundle to refer the temporary build location instead."
-# print `find "#{CACHE_DIR}/.bundle/" -type f -exec sed -i "s /app/ #{CACHE_DIR}/ g" {} \;`
+# Advice from stackoverflow.com/questions/22995788
+puts  "-----> Replace /app with build directory #{BUILD_DIR} for build stage"
+print `sed -i -e "s/app/#{BUILD_DIR}/g" .bundle/config`
 
-puts  "-----> Outputting bundle contents for verification"
+puts  "-----> Outputting .bundle/config contents for verification"
 puts `cat #{BUILD_DIR}/.bundle/config`
-
 
 puts  "-----> Caching the new bundle config"
 print `mkdir -p "#{CACHE_DIR}"`
